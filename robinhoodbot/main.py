@@ -201,7 +201,7 @@ def buy_holdings(potential_buys, profile_data, holdings_data):
     """
     cash = float(profile_data.get('cash'))
     portfolio_value = float(profile_data.get('equity')) - cash
-    ideal_position_size = (portfolio_value/len(holdings_data)+cash/len(potential_buys))/2
+    ideal_position_size = (portfolio_value/len(holdings_data)+cash/len(potential_buys))/(2 * len(potential_buys))
     prices = r.get_latest_price(potential_buys)
     for i in range(0, len(potential_buys)):
         stock_price = float(prices[i])
@@ -230,6 +230,8 @@ def scan_stocks():
     holdings_data = get_modified_holdings()
     potential_buys = []
     sells = []
+    print("Current Portfolio: " + str(portfolio_symbols) + "\n")
+    print("Current Watchlist: " + str(watchlist_symbols) + "\n")
     print("----- Scanning portfolio for stocks to sell -----\n")
     for symbol in portfolio_symbols:
         cross = golden_cross(symbol, n1=50, n2=200, days=30, direction="below")
@@ -237,7 +239,7 @@ def scan_stocks():
             sell_holdings(symbol, holdings_data)
             sells.append(symbol)
     profile_data = r.build_user_profile()
-    print("\n----- Scanning portfolio for stocks to buy -----\n")
+    print("\n----- Scanning watchlist for stocks to buy -----\n")
     for symbol in watchlist_symbols:
         if(symbol not in portfolio_symbols):
             cross = golden_cross(symbol, n1=50, n2=200, days=10, direction="above")
