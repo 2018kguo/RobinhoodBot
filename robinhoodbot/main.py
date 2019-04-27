@@ -139,7 +139,7 @@ def five_year_check(stockTicker):
     return (recent_price > oldest_price)
 
 def golden_cross(stockTicker, n1, n2, days, direction=""):
-    """Figure out if a stock has risen or been created within the last five years.
+    """Determine if a golden/death cross has occured for a specified stock in the last X trading days
 
     Args:
         stockTicker(str): Symbol of the stock we're querying
@@ -173,7 +173,7 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     df = pd.concat(series, axis=1)
     cross = get_last_crossing(df, days, symbol=stockTicker, direction=direction)
     # if(cross):
-    #     show_plot(price, sma1, sma2, dates, "50", "200")
+    #     show_plot(price, sma1, sma2, dates, symbol=stockTicker, label1=str(n1)+" day SMA", label2=str(n2)+" day SMA")
     return cross
 
 def sell_holdings(symbol, holdings_data):
@@ -209,6 +209,9 @@ def buy_holdings(potential_buys, profile_data, holdings_data):
             num_shares = int(ideal_position_size*1.5/stock_price)
         elif (stock_price < ideal_position_size):
             num_shares = int(ideal_position_size/stock_price)
+        else:
+            print("####### Tried buying shares of " + potential_buys[i] + ", but not enough buying power to do so#######")
+            break
         print("####### Buying " + str(num_shares) + " shares of " + potential_buys[i] + " #######")
         r.order_buy_market(potential_buys[i], num_shares)
 

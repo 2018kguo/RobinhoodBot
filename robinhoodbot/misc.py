@@ -18,7 +18,8 @@ def show_plot(price, firstIndicator, secondIndicator, dates, label1="", label2="
         False otherwise
     """
     plt.figure(figsize=(10,5))
-    plt.plot(dates, price)
+    plt.title(symbol)
+    plt.plot(dates, price, label="Closing prices")
     plt.plot(dates, firstIndicator, label=label1)
     plt.plot(dates, secondIndicator, label=label2)
     plt.yticks(np.arange(price.min(), price.max(), step=((price.max()-price.min())/15.0)))
