@@ -237,7 +237,7 @@ def scan_stocks():
     print("Current Watchlist: " + str(watchlist_symbols) + "\n")
     print("----- Scanning portfolio for stocks to sell -----\n")
     for symbol in portfolio_symbols:
-        cross = golden_cross(symbol, n1=5, n2=20, days=30, direction="below")
+        cross = golden_cross(symbol, n1=50, n2=200, days=30, direction="below")
         if(cross == -1):
             sell_holdings(symbol, holdings_data)
             sells.append(symbol)
@@ -245,7 +245,7 @@ def scan_stocks():
     print("\n----- Scanning watchlist for stocks to buy -----\n")
     for symbol in watchlist_symbols:
         if(symbol not in portfolio_symbols):
-            cross = golden_cross(symbol, n1=5, n2=20, days=10, direction="above")
+            cross = golden_cross(symbol, n1=50, n2=200, days=10, direction="above")
             if(cross == 1):
                 potential_buys.append(symbol)
     if(len(potential_buys) > 0):
