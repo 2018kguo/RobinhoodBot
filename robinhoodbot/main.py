@@ -183,7 +183,7 @@ def sell_holdings(symbol, holdings_data):
         symbol(str): Symbol of the stock we want to sell
         holdings_data(dict): dict obtained from get_modified_holdings() method
     """
-    shares_owned = int(float(positions_data[symbol].get("quantity")))
+    shares_owned = int(float(holdings_data[symbol].get("quantity")))
     r.order_sell_market(symbol, shares_owned)
     print("####### Selling " + str(shares_owned) + " shares of " + symbol + " #######")
 
