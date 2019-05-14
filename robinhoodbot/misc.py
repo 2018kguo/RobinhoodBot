@@ -29,9 +29,9 @@ def show_plot(price, firstIndicator, secondIndicator, dates, label1="", label2="
 def get_equity_data():
     """Displays a pie chart of your portfolio holdings
     """
-    positions_data = r.build_holdings()
+    holdings_data = r.build_holdings()
     equity_data = {}
-    for key, value in positions_data.items():
+    for key, value in holdings_data.items():
         equity_data[key] = {}
         equity_data[key][name] = value.get('name')
         equity_data[key][percentage] = value.get("percentage")

@@ -30,8 +30,8 @@ def get_portfolio_symbols():
     Returns: the symbol for each stock in your portfolio as a list of strings
     """
     symbols = []
-    positions_data = r.get_current_positions()
-    for item in positions_data:
+    holdings_data = r.get_current_positions()
+    for item in holdings_data:
         if not item:
             continue
         instrument_data = r.get_instrument_by_url(item.get('instrument'))
@@ -39,19 +39,19 @@ def get_portfolio_symbols():
         symbols.append(symbol)
     return symbols
 
-def get_position_creation_date(symbol, positions_data):
+def get_position_creation_date(symbol, holdings_data):
     """Returns the time at which we bought a certain stock in our portfolio
 
     Args:
         symbol(str): Symbol of the stock that we are trying to figure out when it was bought
-        positions_data(dict): dict returned by r.get_current_positions()
+        holdings_data(dict): dict returned by r.get_current_positions()
 
     Returns:
         A string containing the date and time the stock was bought, or "Not found" otherwise
     """
     instrument = r.get_instruments_by_symbols(symbol)
     url = instrument[0].get('url')
-    for dict in positions_data:
+    for dict in holdings_data:
         if(dict.get('instrument') == url):
             return dict.get('created_at')
     return "Not found"
@@ -66,9 +66,9 @@ def get_modified_holdings():
         position you have, which is 'bought_at': (the time the stock was purchased)
     """
     holdings = r.build_holdings()
-    positions_data = r.get_current_positions()
+    holdings_data = r.get_current_positions()
     for symbol, dict in holdings.items():
-        bought_at = get_position_creation_date(symbol, positions_data)
+        bought_at = get_position_creation_date(symbol, holdings_data)
         bought_at = str(pd.to_datetime(bought_at))
         holdings[symbol].update({'bought_at': bought_at})
     return holdings
@@ -109,7 +109,7 @@ def get_last_crossing(df, days, symbol="", direction=""):
         index -= 1
     if(found != lastIndex):
         if((direction == "above" and recentDiff) or (direction == "below" and not recentDiff)):
-            print(symbol + ": 50 Day SMA crossed" + (" ABOVE " if recentDiff else " BELOW ") + "200 Day SMA at " + str(dates.at[found]) \
+            print(symbol + ": Short SMA crossed" + (" ABOVE " if recentDiff else " BELOW ") + "Long SMA at " + str(dates.at[found]) \
                 +", which was " + str(pd.Timestamp("now", tz='UTC') - dates.at[found]) + " ago", ", price at cross: " + str(prices.at[found]) \
                 + ", current price: " + str(prices.at[lastIndex]))
         return (1 if recentDiff else -1)

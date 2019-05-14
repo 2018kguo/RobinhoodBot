@@ -1,4 +1,5 @@
 import robin_stocks as r
+import pandas as pd
 import json
 
 def update_trade_history(symbols, holdings_data, file_name):
