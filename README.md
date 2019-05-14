@@ -6,3 +6,20 @@ Trading bot for Robinhood accounts
 
 
 https://medium.com/@kev.guo123/building-a-robinhood-stock-trading-bot-8ee1b040ec6a
+
+
+To Install:
+
+install python3 and pip3
+
+```pip3 install robin-stocks```
+```pip3 install pandas```
+```pip3 install numpy```
+```pip3 install ta```
+```pip3 install matplotlib```
+
+To Run:
+
+```cd RobinboodBot/robinhoodbot```
+
+```python3 main.py```
