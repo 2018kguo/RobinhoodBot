@@ -1,6 +1,7 @@
 import robin_stocks as r
 import pandas as pd
 import numpy as np
+import ta as ta
 from pandas.plotting import register_matplotlib_converters
 from ta import *
 from misc import *
@@ -8,6 +9,10 @@ from tradingstats import *
 
 #Log in to Robinhood
 login = r.login('YOUR_EMAIL','YOUR_PASSWORD')
+
+#Safe divide by zero division function
+def safe_division(n, d):
+    return n / d if d else 0
 
 def get_watchlist_symbols():
     """
@@ -167,8 +172,8 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     price = pd.Series(closingPrices)
     dates = pd.Series(dates)
     dates = pd.to_datetime(dates)
-    sma1 = bollinger_mavg(price, n=int(n1), fillna=False)
-    sma2 = bollinger_mavg(price, n=int(n2), fillna=False)
+    sma1 = ta.volatility.bollinger_mavg(price, n=int(n1), fillna=False)
+    sma2 = ta.volatility.bollinger_mavg(price, n=int(n2), fillna=False)
     series = [price.rename("Price"), sma1.rename("Indicator1"), sma2.rename("Indicator2"), dates.rename("Dates")]
     df = pd.concat(series, axis=1)
     cross = get_last_crossing(df, days, symbol=stockTicker, direction=direction)
@@ -201,7 +206,7 @@ def buy_holdings(potential_buys, profile_data, holdings_data):
     """
     cash = float(profile_data.get('cash'))
     portfolio_value = float(profile_data.get('equity')) - cash
-    ideal_position_size = (portfolio_value/len(holdings_data)+cash/len(potential_buys))/(2 * len(potential_buys))
+    ideal_position_size = (safe_division(portfolio_value, len(holdings_data))+cash/len(potential_buys))/(2 * len(potential_buys))
     prices = r.get_latest_price(potential_buys)
     for i in range(0, len(potential_buys)):
         stock_price = float(prices[i])
