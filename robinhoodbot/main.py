@@ -6,9 +6,10 @@ from pandas.plotting import register_matplotlib_converters
 from ta import *
 from misc import *
 from tradingstats import *
+from config import *
 
 #Log in to Robinhood
-login = r.login('YOUR_EMAIL','YOUR_PASSWORD')
+login = r.login(rh_username,rh_password)
 
 #Safe divide by zero division function
 def safe_division(n, d):
