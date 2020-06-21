@@ -178,8 +178,8 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     series = [price.rename("Price"), sma1.rename("Indicator1"), sma2.rename("Indicator2"), dates.rename("Dates")]
     df = pd.concat(series, axis=1)
     cross = get_last_crossing(df, days, symbol=stockTicker, direction=direction)
-    # if(cross):
-    #     show_plot(price, sma1, sma2, dates, symbol=stockTicker, label1=str(n1)+" day SMA", label2=str(n2)+" day SMA")
+    if(cross) and plot:
+        show_plot(price, sma1, sma2, dates, symbol=stockTicker, label1=str(n1)+" day SMA", label2=str(n2)+" day SMA")
     return cross
 
 def sell_holdings(symbol, holdings_data):
@@ -190,7 +190,8 @@ def sell_holdings(symbol, holdings_data):
         holdings_data(dict): dict obtained from get_modified_holdings() method
     """
     shares_owned = int(float(holdings_data[symbol].get("quantity")))
-    r.order_sell_market(symbol, shares_owned)
+    if not debug:
+        r.order_sell_market(symbol, shares_owned)
     print("####### Selling " + str(shares_owned) + " shares of " + symbol + " #######")
 
 def buy_holdings(potential_buys, profile_data, holdings_data):
@@ -219,7 +220,8 @@ def buy_holdings(potential_buys, profile_data, holdings_data):
             print("####### Tried buying shares of " + potential_buys[i] + ", but not enough buying power to do so#######")
             break
         print("####### Buying " + str(num_shares) + " shares of " + potential_buys[i] + " #######")
-        r.order_buy_market(potential_buys[i], num_shares)
+        if not debug:
+            r.order_buy_market(potential_buys[i], num_shares)
 
 def scan_stocks():
     """ The main method. Sells stocks in your portfolio if their 50 day moving average crosses
@@ -232,6 +234,8 @@ def scan_stocks():
         If you sell a stock, this updates tradehistory.txt with information about the position,
         how much you've earned/lost, etc.
     """
+    if debug:
+        print("----- DEBUG MODE -----\n")
     print("----- Starting scan... -----\n")
     register_matplotlib_converters()
     watchlist_symbols = get_watchlist_symbols()
@@ -259,6 +263,8 @@ def scan_stocks():
     if(len(sells) > 0):
         update_trade_history(sells, holdings_data, "tradehistory.txt")
     print("----- Scan over -----\n")
+    if debug:
+        print("----- DEBUG MODE -----\n")
 
 #execute the scan
 scan_stocks()
