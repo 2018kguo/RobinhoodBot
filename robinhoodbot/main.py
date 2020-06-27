@@ -9,6 +9,7 @@ from tradingstats import *
 from config import *
 
 #Log in to Robinhood
+#Put your username and password in a config.py file in the same directory (see sample file)
 login = r.login(rh_username,rh_password)
 
 #Safe divide by zero division function
