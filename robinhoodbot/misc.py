@@ -1,8 +1,9 @@
 import robin_stocks as r
 import matplotlib.pyplot as plt
 import matplotlib.ticker as plticker
+import numpy as np
 
-def show_plot(price, firstIndicator, secondIndicator, dates, label1="", label2=""):
+def show_plot(price, firstIndicator, secondIndicator, dates, symbol="", label1="", label2=""):
     """Displays a chart of the price and indicators for a stock
 
     Args:
