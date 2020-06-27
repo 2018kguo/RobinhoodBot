@@ -9,7 +9,7 @@ https://medium.com/@kev.guo123/building-a-robinhood-stock-trading-bot-8ee1b040ec
 
 
 
-This project support Python 3.7+
+This project supports Python 3.7+
 
 
 To Install:
