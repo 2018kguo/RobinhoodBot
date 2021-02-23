@@ -174,8 +174,8 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     price = pd.Series(closingPrices)
     dates = pd.Series(dates)
     dates = pd.to_datetime(dates)
-    sma1 = ta.volatility.bollinger_mavg(price, n=int(n1), fillna=False)
-    sma2 = ta.volatility.bollinger_mavg(price, n=int(n2), fillna=False)
+    sma1 = ta.volatility.bollinger_mavg(price, int(n1), False)
+    sma2 = ta.volatility.bollinger_mavg(price, int(n2), False)
     series = [price.rename("Price"), sma1.rename("Indicator1"), sma2.rename("Indicator2"), dates.rename("Dates")]
     df = pd.concat(series, axis=1)
     cross = get_last_crossing(df, days, symbol=stockTicker, direction=direction)
