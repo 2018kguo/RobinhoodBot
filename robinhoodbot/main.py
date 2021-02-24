@@ -32,7 +32,7 @@ def get_watchlist_symbols():
         for item in list['results']:
             symbol = item['symbol']
             symbols.append(symbol)
-            
+
     return symbols
 
 def get_portfolio_symbols():
@@ -137,6 +137,8 @@ def five_year_check(stockTicker):
         False otherwise
     """
     instrument = r.get_instruments_by_symbols(stockTicker)
+    if(instrument is None or len(instrument) == 0):
+        return True
     list_date = instrument[0].get("list_date")
     if ((pd.Timestamp("now") - pd.to_datetime(list_date)) < pd.Timedelta("5 Y")):
         return True
