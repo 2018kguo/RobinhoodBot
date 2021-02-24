@@ -16,12 +16,22 @@ login = r.login(rh_username,rh_password)
 def safe_division(n, d):
     return n / d if d else 0
 
+def get_historicals(ticker, intervalArg, spanArg, boundsArg):
+    history = r.get_stock_historicals(ticker,interval=intervalArg,span=spanArg,bounds=boundsArg)
+
+    #If it's not a stock ticker, try it as a crypto ticker
+    if(history is None or None in history):
+        history = r.get_crypto_historicals(ticker,interval=intervalArg,span=spanArg,bounds=boundsArg)
+
+    return history
+
 def get_watchlist_symbols():
     """
     Returns: the symbol for each stock in your watchlist as a list of strings
     """
     my_list_names = set()
     symbols = []
+    
     watchlistInfo = r.get_all_watchlists()
     for list in watchlistInfo['results']:
         listName = list['display_name']
@@ -142,7 +152,9 @@ def five_year_check(stockTicker):
     list_date = instrument[0].get("list_date")
     if ((pd.Timestamp("now") - pd.to_datetime(list_date)) < pd.Timedelta("5 Y")):
         return True
-    fiveyear = r.get_stock_historicals(stockTicker,interval='day',span='5year',bounds='regular')
+    fiveyear =  get_historicals(stockTicker, "day", "5year", "regular")
+    if (fiveyear is None or None in fiveyear):
+        return True
     closingPrices = []
     for item in fiveyear:
         closingPrices.append(float(item['close_price']))
@@ -170,7 +182,13 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     """
     if(direction == "above" and not five_year_check(stockTicker)):
         return False
-    history = r.get_stock_historicals(stockTicker,interval='day',span='year',bounds='regular')
+    
+    history = get_historicals(stockTicker, "day", "year", "regular")
+
+    #Couldn't get pricing data
+    if(history is None or None in history):
+        return False
+    
     closingPrices = []
     dates = []
     for item in history:
