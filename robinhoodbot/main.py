@@ -1,4 +1,4 @@
-import robin_stocks as r
+import robin_stocks.robinhood as r
 import pandas as pd
 import numpy as np
 import ta as ta
@@ -20,16 +20,19 @@ def get_watchlist_symbols():
     """
     Returns: the symbol for each stock in your watchlist as a list of strings
     """
-    my_list_names = []
+    my_list_names = set()
     symbols = []
-    for name in r.get_all_watchlists(info='name'):
-        my_list_names.append(name)
-    for name in my_list_names:
-        list = r.get_watchlist_by_name(name)
-        for item in list:
-            instrument_data = r.get_instrument_by_url(item.get('instrument'))
-            symbol = instrument_data['symbol']
+    watchlistInfo = r.get_all_watchlists()
+    for list in watchlistInfo['results']:
+        listName = list['display_name']
+        my_list_names.add(listName)
+
+    for listName in my_list_names:
+        list = r.get_watchlist_by_name(name=listName)
+        for item in list['results']:
+            symbol = item['symbol']
             symbols.append(symbol)
+            
     return symbols
 
 def get_portfolio_symbols():
@@ -137,7 +140,7 @@ def five_year_check(stockTicker):
     list_date = instrument[0].get("list_date")
     if ((pd.Timestamp("now") - pd.to_datetime(list_date)) < pd.Timedelta("5 Y")):
         return True
-    fiveyear = r.get_historicals(stockTicker,span='5year',bounds='regular')
+    fiveyear = r.get_stock_historicals(stockTicker,interval='day',span='5year',bounds='regular')
     closingPrices = []
     for item in fiveyear:
         closingPrices.append(float(item['close_price']))
@@ -165,7 +168,7 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     """
     if(direction == "above" and not five_year_check(stockTicker)):
         return False
-    history = r.get_historicals(stockTicker,span='year',bounds='regular')
+    history = r.get_stock_historicals(stockTicker,interval='day',span='year',bounds='regular')
     closingPrices = []
     dates = []
     for item in history:
@@ -179,6 +182,7 @@ def golden_cross(stockTicker, n1, n2, days, direction=""):
     series = [price.rename("Price"), sma1.rename("Indicator1"), sma2.rename("Indicator2"), dates.rename("Dates")]
     df = pd.concat(series, axis=1)
     cross = get_last_crossing(df, days, symbol=stockTicker, direction=direction)
+    
     if(cross) and plot:
         show_plot(price, sma1, sma2, dates, symbol=stockTicker, label1=str(n1)+" day SMA", label2=str(n2)+" day SMA")
     return cross

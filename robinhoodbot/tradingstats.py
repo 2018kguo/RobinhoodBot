@@ -1,4 +1,4 @@
-import robin_stocks as r
+import robin_stocks.robinhood as r
 import pandas as pd
 import json
 
