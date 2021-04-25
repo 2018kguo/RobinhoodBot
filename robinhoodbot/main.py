@@ -30,18 +30,18 @@ def get_watchlist_symbols():
     Returns: the symbol for each stock in your watchlist as a list of strings
     """
     my_list_names = set()
-    symbols = []
+    symbols = set()
     
     watchlistInfo = r.get_all_watchlists()
-    for list in watchlistInfo['results']:
-        listName = list['display_name']
+    for watchlist in watchlistInfo['results']:
+        listName = watchlist['display_name']
         my_list_names.add(listName)
 
     for listName in my_list_names:
-        list = r.get_watchlist_by_name(name=listName)
-        for item in list['results']:
+        watchlist = r.get_watchlist_by_name(name=listName)
+        for item in watchlist['results']:
             symbol = item['symbol']
-            symbols.append(symbol)
+            symbols.add(symbol)
 
     return symbols
 
